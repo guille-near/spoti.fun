@@ -1,35 +1,38 @@
-"use client"
+import React from "react";
+import { Toast, ToastClose } from "./toast";
+import { useToast } from "@/hooks/use-toast";
 
-import { useToast } from "@/hooks/use-toast"
-import {
-  Toast,
-  ToastClose,
-  ToastDescription,
-  ToastProvider,
-  ToastTitle,
-  ToastViewport,
-} from "@/components/ui/toast"
+interface ToastAction {
+  label: string;
+  onClick: () => void;
+}
+
+interface ToastItem {
+  id: string;
+  title?: string;
+  description?: string;
+  action?: ToastAction;
+}
 
 export function Toaster() {
-  const { toasts } = useToast()
+  const { toasts } = useToast();
 
   return (
-    <ToastProvider>
-      {toasts.map(function ({ id, title, description, action, ...props }) {
-        return (
-          <Toast key={id} {...props}>
-            <div className="grid gap-1">
-              {title && <ToastTitle>{title}</ToastTitle>}
-              {description && (
-                <ToastDescription>{description}</ToastDescription>
-              )}
-            </div>
-            {action}
-            <ToastClose />
-          </Toast>
-        )
-      })}
-      <ToastViewport />
-    </ToastProvider>
-  )
+    <div>
+      {toasts && toasts.map(({ id, title, description, action }) => (
+        <Toast key={id}>
+          <div>
+            {title && <div>{title}</div>}
+            {description && <div>{description}</div>}
+          </div>
+          {action && (
+            <button onClick={action.onClick} className="toast-action">
+              {action.label}
+            </button>
+          )}
+          <ToastClose />
+        </Toast>
+      ))}
+    </div>
+  );
 }
