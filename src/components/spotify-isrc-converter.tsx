@@ -64,11 +64,7 @@ const audioFeatureDescriptions = {
   valence: "Describes the musical positiveness conveyed by a track. Tracks with high valence sound more positive (e.g. happy, cheerful, euphoric), while tracks with low valence sound more negative (e.g. sad, depressed, angry)."
 }
 
-interface SpotifyIsrcConverterProps {
-  showToast: () => void;
-}
-
-export function SpotifyIsrcConverter({ showToast }: SpotifyIsrcConverterProps) {
+export function SpotifyIsrcConverter() {
   const [mode, setMode] = useState<'url' | 'isrc'>('url')
   const [input, setInput] = useState('')
   const [result, setResult] = useState<TrackInfo | null>(null)
@@ -162,13 +158,6 @@ export function SpotifyIsrcConverter({ showToast }: SpotifyIsrcConverterProps) {
     }
     setLoading(false)
   }
-
-  const handleConvert = async () => {
-    // ... lógica de conversión ...
-    
-    // Llamar a showToast cuando sea apropiado, por ejemplo:
-    showToast();
-  };
 
   return (
     <div className="w-full max-w-md mx-auto flex flex-col min-h-[600px]">

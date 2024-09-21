@@ -1,19 +1,8 @@
 'use client'
 
 import { SpotifyIsrcConverter } from "@/components/spotify-isrc-converter";
-import { Toaster } from "@/components/ui/toaster";
-import { useToast } from "@/hooks/use-toast";
 
 export default function Home() {
-  const { toast } = useToast();
-
-  const showWelcomeToast = () => {
-    toast({
-      title: "Bienvenido a Spoti.fun!",
-      description: "Convierte fácilmente ISRCs a enlaces de Spotify.",
-    });
-  };
-
   return (
     <div className="relative min-h-screen flex flex-col">
       <div className="flex-grow flex flex-col items-center pt-8 sm:pt-16 px-4 sm:px-8">
@@ -22,7 +11,7 @@ export default function Home() {
         </header>
         
         <main className="w-full max-w-xl">
-          <SpotifyIsrcConverter showToast={showWelcomeToast} />
+          <SpotifyIsrcConverter />
         </main>
       </div>
       
@@ -47,8 +36,6 @@ export default function Home() {
           </a>
         </p>
       </footer>
-      
-      <Toaster />
     </div>
   );
 }
