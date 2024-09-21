@@ -119,8 +119,8 @@ export function SpotifyIsrcConverter() {
         },
         artistId: data.track.artists[0].id
       });
-    } catch {
-      setError('Error fetching track information. Please try again.');
+    } catch (error) {
+      setError(`Error fetching track information: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
 
     setLoading(false)
@@ -161,7 +161,7 @@ export function SpotifyIsrcConverter() {
 
   return (
     <div className="w-full max-w-md mx-auto flex flex-col min-h-[600px]">
-      <Card className="mb-4">
+      <Card className="mb-4 bg-white dark:bg-gray-800">
         <CardContent className="p-4">
           <div className="space-y-2">
             <Label htmlFor="spotify-input">
