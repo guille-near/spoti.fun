@@ -19,6 +19,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface TrackInfo {
   type: 'isrc' | 'url'
@@ -186,9 +187,7 @@ export function SpotifyIsrcConverter() {
       
       <div className="flex-grow overflow-hidden relative">
         {result && (
-          <div
-            className="mt-4"
-          >
+          <div className="mt-4">
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-start space-x-3 mb-3">
@@ -219,105 +218,115 @@ export function SpotifyIsrcConverter() {
                     </div>
                   </div>
                 </div>
-                <div className="bg-white p-2 rounded-md shadow-sm mb-3">
-                  <p className="text-xs font-medium text-gray-600 mb-1">
-                    {result.type === 'isrc' ? 'ISRC:' : 'Spotify URL:'}
-                  </p>
-                  <p className="text-sm break-all">
-                    {result.value}
-                  </p>
-                </div>
-                <Accordion type="single" collapsible className="w-full">
-                  <AccordionItem value="audio-features">
-                    <AccordionTrigger className="text-sm font-medium text-gray-600">
-                      Audio Features
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="bg-white p-2 rounded-md shadow-sm">
-                        {Object.entries(result.audioFeatures).map(([feature, value]) => (
-                          <div key={feature} className="mb-2">
-                            <div className="flex justify-between text-xs mb-1">
-                              <div className="flex items-center">
-                                <span className="mr-1">{feature}</span>
-                                <Popover>
-                                  <PopoverTrigger asChild>
-                                    <Button variant="ghost" size="sm" className="p-0">
-                                      <Info className="h-3 w-3" />
-                                    </Button>
-                                  </PopoverTrigger>
-                                  <PopoverContent className="w-80">
-                                    <p className="max-w-xs text-xs">{audioFeatureDescriptions[feature as keyof typeof audioFeatureDescriptions]}</p>
-                                  </PopoverContent>
-                                </Popover>
+                <div className="flex mt-3">
+                  <div className="w-full">
+                    <div className="bg-white p-2 rounded-md shadow-sm mb-2">
+                      <p className="text-xs font-medium text-gray-600 mb-1">
+                        {result.type === 'isrc' ? 'ISRC:' : 'Spotify URL:'}
+                      </p>
+                      <p className="text-sm break-all">
+                        {result.value}
+                      </p>
+                    </div>
+                    <Accordion type="single" collapsible className="w-full">
+                      <AccordionItem value="audio-features">
+                        <AccordionTrigger className="text-xs font-medium text-gray-600 px-2">
+                          Audio Features
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <div className="bg-white rounded-md shadow-sm">
+                            {Object.entries(result.audioFeatures).map(([feature, value]) => (
+                              <div key={feature} className="mb-2 px-2">
+                                <div className="flex justify-between text-xs mb-1">
+                                  <div className="flex items-center">
+                                    <span className="mr-1">{feature}</span>
+                                    <Popover>
+                                      <PopoverTrigger asChild>
+                                        <Button variant="ghost" size="sm" className="p-0">
+                                          <Info className="h-3 w-3" />
+                                        </Button>
+                                      </PopoverTrigger>
+                                      <PopoverContent className="w-80">
+                                        <p className="max-w-xs text-xs">{audioFeatureDescriptions[feature as keyof typeof audioFeatureDescriptions]}</p>
+                                      </PopoverContent>
+                                    </Popover>
+                                  </div>
+                                  <span>{value.toFixed(3)}</span>
+                                </div>
+                                <div className="bg-gray-200 h-2 rounded-full">
+                                  <div 
+                                    className="bg-black h-2 rounded-full" 
+                                    style={{width: `${value * 100}%`}}
+                                  ></div>
+                                </div>
                               </div>
-                              <span>{value.toFixed(3)}</span>
-                            </div>
-                            <div className="bg-gray-200 h-2 rounded-full">
-                              <div 
-                                className="bg-black h-2 rounded-full" 
-                                style={{width: `${value * 100}%`}}
-                              ></div>
-                            </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-        
-        {artistInfo && (
-          <div
-            className="absolute top-0 left-0 right-0 z-10"
-          >
-            <Card className="mt-4">
-              <CardContent className="p-4">
-                <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-xl font-semibold">{artistInfo.name}</h3>
-                  <Button variant="ghost" size="sm" onClick={() => setArtistInfo(null)}>
-                    Close
-                  </Button>
-                </div>
-                <div className="flex items-start space-x-4">
-                  {artistInfo.imageUrl && (
-                    <Image
-                      src={artistInfo.imageUrl}
-                      alt={`${artistInfo.name} image`}
-                      width={100}
-                      height={100}
-                      className="rounded-md"
-                    />
-                  )}
-                  <div className="flex-grow">
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
-                        <p className="text-xs text-gray-500">Followers</p>
-                        <p className="text-sm font-medium">{artistInfo.followers.toLocaleString()}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Popularity</p>
-                        <p className="text-sm font-medium">{artistInfo.popularity}/100</p>
-                      </div>
-                    </div>
-                    <div className="mt-2">
-                      <p className="text-xs text-gray-500 mb-1">Genres</p>
-                      <div className="flex flex-wrap gap-1">
-                        {artistInfo.genres.map((genre, index) => (
-                          <span key={index} className="text-xs bg-gray-200 rounded-full px-2 py-1">
-                            {genre}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
                   </div>
                 </div>
               </CardContent>
             </Card>
           </div>
         )}
+        
+        <AnimatePresence>
+          {artistInfo && (
+            <motion.div
+              initial={{ opacity: 0, x: '100%' }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: '100%' }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="absolute top-0 left-0 right-0 z-10"
+            >
+              <Card className="mt-4">
+                <CardContent className="p-4">
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="text-xl font-semibold">{artistInfo.name}</h3>
+                    <Button variant="ghost" size="sm" onClick={() => setArtistInfo(null)}>
+                      Close
+                    </Button>
+                  </div>
+                  <div className="flex items-start space-x-4">
+                    {artistInfo.imageUrl && (
+                      <Image
+                        src={artistInfo.imageUrl}
+                        alt={`${artistInfo.name} image`}
+                        width={100}
+                        height={100}
+                        className="rounded-md"
+                      />
+                    )}
+                    <div className="flex-grow">
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <p className="text-xs text-gray-500">Followers</p>
+                          <p className="text-sm font-medium">{artistInfo.followers.toLocaleString()}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500">Popularity</p>
+                          <p className="text-sm font-medium">{artistInfo.popularity}/100</p>
+                        </div>
+                      </div>
+                      <div className="mt-2">
+                        <p className="text-xs text-gray-500 mb-1">Genres</p>
+                        <div className="flex flex-wrap gap-1">
+                          {artistInfo.genres.map((genre, index) => (
+                            <span key={index} className="text-xs bg-gray-200 rounded-full px-2 py-1">
+                              {genre}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
+        </AnimatePresence>
         
         {error && (
           <Alert variant="destructive" className="mt-4">
