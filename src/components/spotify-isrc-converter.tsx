@@ -154,7 +154,7 @@ export function SpotifyIsrcConverter() {
       });
     } catch (error) {
       console.error('Error fetching artist info:', error);
-      setError('Error fetching artist information. Please try again.');
+      setError(`Error fetching artist information: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
     setLoading(false)
   }
