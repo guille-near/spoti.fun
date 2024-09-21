@@ -58,7 +58,53 @@ export function useToast() {
     toasts: [],
   })
 
+  const toast = React.useCallback(
+    (props: Omit<ToasterToast, "id">) => {
+      const id = Math.random().toString(36).substr(2, 9)
+      dispatch({
+        type: "ADD_TOAST",
+        toast: { ...props, id },
+      })
+      return id
+    },
+    [dispatch]
+  )
+
+  const update = React.useCallback(
+    (id: string, props: Partial<ToasterToast>) => {
+      dispatch({
+        type: "UPDATE_TOAST",
+        toast: { ...props, id },
+      })
+    },
+    [dispatch]
+  )
+
+  const dismiss = React.useCallback(
+    (id: string) => {
+      dispatch({
+        type: "DISMISS_TOAST",
+        toastId: id,
+      })
+    },
+    [dispatch]
+  )
+
+  const remove = React.useCallback(
+    (id: string) => {
+      dispatch({
+        type: "REMOVE_TOAST",
+        toastId: id,
+      })
+    },
+    [dispatch]
+  )
+
   return {
-    // Retorna las funciones y estado necesarios
+    toasts: state.toasts,
+    toast,
+    update,
+    dismiss,
+    remove,
   }
 }
