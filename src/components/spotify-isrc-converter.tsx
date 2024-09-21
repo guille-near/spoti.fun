@@ -21,6 +21,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { motion, AnimatePresence } from 'framer-motion'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface TrackInfo {
   type: 'isrc' | 'url'
@@ -245,16 +250,16 @@ export function SpotifyIsrcConverter() {
                               <div className="flex justify-between text-xs mb-1">
                                 <div className="flex items-center">
                                   <span className="mr-1">{feature}</span>
-                                  <TooltipProvider>
-                                    <Tooltip>
-                                      <TooltipTrigger>
+                                  <Popover>
+                                    <PopoverTrigger asChild>
+                                      <Button variant="ghost" size="sm" className="p-0">
                                         <Info className="h-3 w-3" />
-                                      </TooltipTrigger>
-                                      <TooltipContent>
-                                        <p className="max-w-xs text-xs">{audioFeatureDescriptions[feature as keyof typeof audioFeatureDescriptions]}</p>
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  </TooltipProvider>
+                                      </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-80">
+                                      <p className="max-w-xs text-xs">{audioFeatureDescriptions[feature as keyof typeof audioFeatureDescriptions]}</p>
+                                    </PopoverContent>
+                                  </Popover>
                                 </div>
                                 <span>{value.toFixed(3)}</span>
                               </div>
