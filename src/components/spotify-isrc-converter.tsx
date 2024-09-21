@@ -161,7 +161,7 @@ export function SpotifyIsrcConverter() {
 
   return (
     <div className="w-full max-w-md mx-auto flex flex-col min-h-[600px]">
-      <Card className="mb-4 bg-white dark:bg-gray-800">
+      <Card className="mb-4 bg-white dark:bg-gray-800 shadow-md">
         <CardContent className="p-4">
           <div className="space-y-2">
             <Label htmlFor="spotify-input">
@@ -173,7 +173,7 @@ export function SpotifyIsrcConverter() {
                 placeholder={mode === 'url' ? "https://open.spotify.com/track/..." : "E.g., BRBMG0300729"}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                className="flex-grow"
+                className="flex-grow bg-transparent"
               />
               <Button onClick={convertInput} disabled={loading}>
                 {loading ? 'Loading...' : 'Get Info'}
