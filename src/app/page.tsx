@@ -7,7 +7,7 @@ export default function Home() {
     <div className="relative min-h-screen flex flex-col">
       <div className="flex-grow flex flex-col items-center pt-8 sm:pt-16 px-4 sm:px-8">
         <header className="w-full text-center mb-6">
-          <h1 className="text-3xl font-bold">Enjoy Spoti.fun!</h1>
+          <h1 className="text-3xl font-bold"></h1>
         </header>
         
         <main className="w-full max-w-xl">
@@ -32,7 +32,7 @@ export default function Home() {
               }, 500);
             }}
           >
-            Follow Diss$hit
+            Made with ❤️ by Diss$hit
           </a>
         </p>
       </footer>

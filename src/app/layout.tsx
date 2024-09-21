@@ -5,8 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Spoti.fun - ISRC to Spotify Converter",
-  description: "Convert ISRC codes to Spotify links easily",
+  title: "Spoti.fun",
+  description: "Get Spotify track info with ease.",
 };
 
 export default function RootLayout({
