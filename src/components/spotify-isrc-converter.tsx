@@ -119,7 +119,7 @@ export function SpotifyIsrcConverter() {
         },
         artistId: data.track.artists[0].id
       });
-    } catch (error) {
+    } catch {
       setError('Error fetching track information. Please try again.');
     }
 
