@@ -119,7 +119,7 @@ export function SpotifyIsrcConverter() {
         },
         artistId: data.track.artists[0].id
       });
-    } catch (err) {
+    } catch (error) {
       setError('Error fetching track information. Please try again.');
     }
 
@@ -152,8 +152,8 @@ export function SpotifyIsrcConverter() {
         popularity: data.popularity,
         imageUrl: data.images[0]?.url || ''
       });
-    } catch (err) {
-      console.error('Error fetching artist info:', err);
+    } catch (error) {
+      console.error('Error fetching artist info:', error);
       setError('Error fetching artist information. Please try again.');
     }
     setLoading(false)

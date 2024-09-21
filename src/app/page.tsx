@@ -1,6 +1,5 @@
 'use client'
 
-import Image from "next/image";
 import { SpotifyIsrcConverter } from "@/components/spotify-isrc-converter";
 import DotPatternBackground from "@/components/dot-pattern-background";
 
