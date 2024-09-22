@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from "next/image"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -70,36 +70,54 @@ export function SpotifyIsrcConverter() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [artistInfo, setArtistInfo] = useState<ArtistInfo | null>(null)
+  const [showNotification, setShowNotification] = useState(false)
 
-  const toggleMode = () => {
-    setMode(prevMode => prevMode === 'url' ? 'isrc' : 'url')
-    setInput('')
-    setResult(null)
-    setError('')
-    setArtistInfo(null)
-  }
+  useEffect(() => {
+    const loadDefaultTrack = async () => {
+      const defaultInput = "https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT";
+      setInput(defaultInput);
+      setMode('url');
+      await fetchTrackInfo(defaultInput, 'url');
+      
+      setTimeout(() => {
+        setShowNotification(true);
+      }, 2000);
+    };
 
-  const convertInput = async () => {
-    setResult(null)
-    setError('')
-    setLoading(true)
-    setArtistInfo(null)
+    loadDefaultTrack();
+  }, []);
+
+  const fetchTrackInfo = async (inputValue: string, inputMode: 'url' | 'isrc') => {
+    if (!inputValue.trim()) {
+      setError('Please enter a valid Spotify URL or ISRC');
+      return;
+    }
+
+    setResult(null);
+    setError('');
+    setLoading(true);
+    setArtistInfo(null);
 
     try {
       const response = await fetch('/api/spotify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ input, mode })
+        body: JSON.stringify({ input: inputValue, mode: inputMode })
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch track information');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to fetch track information');
       }
 
       const data = await response.json();
+      if (!data.track || !data.features) {
+        throw new Error('Unexpected response format from the server');
+      }
+
       setResult({
-        type: mode === 'url' ? 'isrc' : 'url',
-        value: mode === 'url' ? data.track.external_ids.isrc : data.track.external_urls.spotify,
+        type: inputMode === 'url' ? 'isrc' : 'url',
+        value: inputMode === 'url' ? data.track.external_ids.isrc : data.track.external_urls.spotify,
         artist: data.track.artists[0].name,
         song: data.track.name,
         coverUrl: data.track.album.images[0].url,
@@ -119,10 +137,21 @@ export function SpotifyIsrcConverter() {
         artistId: data.track.artists[0].id
       });
     } catch (error) {
+      console.error('Error in fetchTrackInfo:', error);
       setError(`Error fetching track information: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
 
-    setLoading(false)
+    setLoading(false);
+  };
+
+  const convertInput = () => fetchTrackInfo(input, mode);
+
+  const toggleMode = () => {
+    setMode(prevMode => prevMode === 'url' ? 'isrc' : 'url')
+    setInput('')
+    setResult(null)
+    setError('')
+    setArtistInfo(null)
   }
 
   const getArtistInfo = async () => {
@@ -158,8 +187,36 @@ export function SpotifyIsrcConverter() {
     setLoading(false)
   }
 
+  const handleNotificationClick = () => {
+    setShowNotification(false);
+    setInput('');
+    setResult(null);
+    setError('');
+    setArtistInfo(null);
+  };
+
   return (
-    <div className="w-full max-w-md mx-auto flex flex-col min-h-[600px]">
+    <div className="w-full max-w-md mx-auto flex flex-col min-h-[600px] relative pb-24">
+      <AnimatePresence>
+        {showNotification && (
+          <motion.div
+            initial={{ opacity: 0, x: '100%' }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: '100%' }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 cursor-pointer"
+            onClick={handleNotificationClick}
+          >
+            <Alert variant="default" className="w-auto max-w-sm bg-white text-black border border-gray-200 shadow-md">
+              <Info className="h-4 w-4" />
+              <AlertDescription className="ml-2">
+                ¡Prueba tu propia URL de Spotify! Haz clic aquí para limpiar y comenzar tu búsqueda.
+              </AlertDescription>
+            </Alert>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <Card className="mb-4 bg-white dark:bg-gray-800 shadow-md">
         <CardContent className="p-4">
           <div className="space-y-2">
@@ -228,7 +285,7 @@ export function SpotifyIsrcConverter() {
                         {result.value}
                       </p>
                     </div>
-                    <Accordion type="single" collapsible className="w-full">
+                    <Accordion type="single" collapsible className="w-full" defaultValue="audio-features">
                       <AccordionItem value="audio-features">
                         <AccordionTrigger className="text-xs font-medium text-gray-600 px-2">
                           Audio Features

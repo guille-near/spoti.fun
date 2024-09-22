@@ -1,6 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
 const getAccessToken = async () => {
+  if (!process.env.SPOTIFY_CLIENT_ID || !process.env.SPOTIFY_CLIENT_SECRET) {
+    throw new Error('Spotify client ID or client secret is missing');
+  }
+
   const response = await fetch('https://accounts.spotify.com/api/token', {
     method: 'POST',
     headers: {
@@ -9,6 +13,10 @@ const getAccessToken = async () => {
     },
     body: 'grant_type=client_credentials'
   });
+
+  if (!response.ok) {
+    throw new Error(`Failed to get access token: ${response.statusText}`);
+  }
 
   const data = await response.json();
   return data.access_token;
@@ -48,31 +56,28 @@ const getTrackByISRC = async (isrc: string, accessToken: string) => {
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
-    try {
-      const { input, mode } = req.body;
-      let trackId;
+  try {
+    const { input, mode } = req.body;
 
-      const accessToken = await getAccessToken();
-
-      if (mode === 'url') {
-        trackId = input.split('/').pop()?.split('?')[0];
-      } else {
-        trackId = await getTrackByISRC(input, accessToken);
-      }
-
-      if (!trackId) {
-        return res.status(400).json({ error: 'Invalid input' });
-      }
-
-      const data = await getTrackInfo(trackId, accessToken);
-      res.status(200).json(data);
-    } catch (error) {
-      console.error('Error fetching track information:', error);
-      res.status(500).json({ error: 'Error fetching track information' });
+    if (!input || !mode) {
+      return res.status(400).json({ message: 'Input and mode are required' });
     }
-  } else {
-    res.setHeader('Allow', ['POST']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+
+    const accessToken = await getAccessToken();
+    let trackId;
+
+    if (mode === 'url') {
+      const urlParts = input.split('/');
+      trackId = urlParts[urlParts.length - 1].split('?')[0];
+    } else {
+      trackId = await getTrackByISRC(input, accessToken);
+    }
+
+    const trackInfo = await getTrackInfo(trackId, accessToken);
+
+    res.status(200).json(trackInfo);
+  } catch (error) {
+    console.error('Error in Spotify API handler:', error);
+    res.status(500).json({ message: error instanceof Error ? error.message : 'An unexpected error occurred' });
   }
 }

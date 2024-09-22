@@ -5,7 +5,7 @@ import { SpotifyIsrcConverter } from "@/components/spotify-isrc-converter";
 export default function Home() {
   return (
     <div className="relative min-h-screen flex flex-col">
-      <div className="flex-grow flex flex-col items-center pt-8 sm:pt-16 px-4 sm:px-8">
+      <div className="flex-grow flex flex-col items-center pt-8 sm:pt-16 px-4 sm:px-8 pb-24">
         <header className="w-full text-center mb-6">
           <h1 className="text-3xl font-bold"></h1>
         </header>
@@ -16,7 +16,7 @@ export default function Home() {
       </div>
       
       <footer className="sticky bottom-0 py-4 bg-black text-white text-center text-sm">
-        <p className="flex items-center justify-center space-x-2">
+        <div className="flex items-center justify-center space-x-2">
           <span>spoti.fun &copy; 2024</span>
           <span>|</span>
           <a 
@@ -34,7 +34,7 @@ export default function Home() {
           >
             Made with ❤️ by Diss$hit
           </a>
-        </p>
+        </div>
       </footer>
     </div>
   );
