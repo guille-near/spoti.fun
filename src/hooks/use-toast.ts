@@ -18,6 +18,8 @@ type ToasterToast = ToastProps & {
   action?: ToastActionElement
 }
 
+type ToastId = string
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const actionTypes = {
   ADD_TOAST: "ADD_TOAST",
@@ -31,11 +33,11 @@ type ActionType = typeof actionTypes
 type Action =
   | {
       type: ActionType['ADD_TOAST']
-      toast: Toast
+      toast: ToasterToast
     }
   | {
       type: ActionType['UPDATE_TOAST']
-      toast: Partial<Toast>
+      toast: Partial<ToasterToast>
     }
   | {
       type: ActionType['DISMISS_TOAST']
@@ -87,8 +89,6 @@ export const reducer = (state: State, action: Action): State => {
     case "DISMISS_TOAST": {
       const { toastId } = action
 
-      // ! Side effects ! - This could be extracted into a dismissToast() action,
-      // but I'll keep it here for simplicity
       if (toastId) {
         addToRemoveQueue(toastId)
       } else {
@@ -134,10 +134,8 @@ function dispatch(action: Action) {
   })
 }
 
-type Toast = Omit<ToasterToast, "id">
-
-function toast({ ...props }: Toast) {
-  const id = genId()
+function toast({ ...props }: ToasterToast) {
+  const id = props.id || String(Date.now())
 
   const update = (props: ToasterToast) =>
     dispatch({
