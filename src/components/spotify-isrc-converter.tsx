@@ -231,7 +231,7 @@ export function SpotifyIsrcConverter() {
                 onChange={(e) => setInput(e.target.value)}
                 className="flex-grow bg-transparent"
               />
-              <Button onClick={convertInput} disabled={loading}>
+              <Button onClick={convertInput} disabled={loading} className="bg-black text-white hover:bg-gray-800">
                 {loading ? 'Loading...' : 'Get Info'}
               </Button>
               <Button variant="outline" size="icon" onClick={toggleMode}>
@@ -338,7 +338,7 @@ export function SpotifyIsrcConverter() {
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
               className="absolute top-0 left-0 right-0 z-10"
             >
-              <Card className="mt-4">
+              <Card className="mt-4 bg-white">
                 <CardContent className="p-4">
                   <div className="flex justify-between items-start mb-4">
                     <h3 className="text-xl font-semibold">{artistInfo.name}</h3>
