@@ -217,7 +217,7 @@ export function SpotifyIsrcConverter() {
         )}
       </AnimatePresence>
 
-      <Card className="mb-4 bg-white dark:bg-gray-800 shadow-md">
+      <Card className="mb-4 bg-white shadow-md">
         <CardContent className="p-4">
           <div className="space-y-2">
             <Label htmlFor="spotify-input">
@@ -245,7 +245,7 @@ export function SpotifyIsrcConverter() {
       <div className="flex-grow overflow-hidden relative">
         {result && (
           <div className="mt-4">
-            <Card>
+            <Card className="bg-white">
               <CardContent className="p-4">
                 <div className="flex items-start space-x-3 mb-3">
                   <Image
